@@ -1,7 +1,7 @@
-name: Long Haul
-description: Long Form Jekyll theme built with SASS / COMPASS / SUSY
+name: drewland.me
+description: If I was a wizard I would cast spells and stuff not write code...
 
-url: http://brianmaierjr.github.com/long-haul
+url: http://drewland.me
 paginate_path: "blog/page:num/"
 permalink: blog/:title/
 
