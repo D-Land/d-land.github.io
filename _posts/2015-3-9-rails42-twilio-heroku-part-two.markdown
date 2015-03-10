@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Part One: Rails 4.2 + Twilio + Heroku"
+title:  "Part Two: Rails 4.2 + Twilio + Heroku"
 date:   2015-3-9
 ---
 
