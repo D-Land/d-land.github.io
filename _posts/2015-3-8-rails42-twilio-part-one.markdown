@@ -4,9 +4,7 @@ title:  "Part One: Rails 4.2 + Twilio"
 date:   2015-3-8
 ---
 
-<p class="intro"><span class="dropcap">P</span>art One: Rails 4.2 + Twilio - Pig Latin Transtor</p>
-
-s is going to be a three part tutorial on building an app that utilizes Rails 4.2 and ActiveJob along with Twilio and Heroku.
+<p class="intro"><span class="dropcap">T</span>his is going to be a three part tutorial on building an app that utilizes Rails 4.2 and ActiveJob along with Twilio and Heroku.
 
 In part one we are going to create a Rails 4.2 application that uses Twilio to build a pig latin translator. The app will receive an english sentence via SMS, translate it, and send back the translation. There will be no front end. The only way to communicate with the app as an end user is via SMS.
 
