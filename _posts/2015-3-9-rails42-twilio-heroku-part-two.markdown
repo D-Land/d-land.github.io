@@ -6,6 +6,8 @@ date:   2015-3-9
 
 <p class="intro"><span class="dropcap">H</span>eroku has requirements for applications that run on its service. We are going to try and keep our local development environment as close to Heroku as possible.
 
+Note: This is still a work in progress
+
 The first requirement is that applications use PostgreSQL. Rails by default using sqlite3 for its databases. To install Postgres locally on a Mac I suggest the [PostgreSQL app](http://postgresapp.com/). Now to get our application to use Postgres we need to make a few changes. First let's switch out the sqlite3 gem by replacing it with `gem 'pg'` in our Gemfile. We also need to change the database.yml file to specify PostgreSQL.
 
 ```yaml
