@@ -73,7 +73,7 @@ We should now test to make sure our routes are working and that we are creating 
 
 So when you run that curl command while your server is running you should see something similar to this if everything is working:
 
-```shell
+```bash
 Processing by TextMessagesController#create as */*
   Parameters: {"To"=>"+12345678910", "From"=>"+12345678911", "Body"=>"Catch me if you can"}
    (0.0ms)  begin transaction
@@ -133,7 +133,7 @@ end
 
 Start the rails server again and use curl to verify that everything is working. If it is you should see this:
 
-```shell
+```bash
 Processing by TextMessagesController#create as */*
   Parameters: {"To"=>"+12345678910", "From"=>"+12345678911", "Body"=>"Catch me if you can"}
    (0.0ms)  begin transaction

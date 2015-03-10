@@ -5,9 +5,9 @@ url: http://drewland.me
 paginate_path: "blog/page:num/"
 permalink: blog/:title/
 
-markdown: redcarpet
-pygments: true
-paginate: 5
+markdown:    redcarpet
+highlighter: pygments
+paginate:    5
 
 navigation:
  - title: Home
