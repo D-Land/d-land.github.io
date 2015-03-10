@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Part One: Rails 4.2 + Twilio"
-date:   2014-12-13
+date:   2015-3-8
 ---
 
 <p class="intro"><span class="dropcap">P</span>art One: Rails 4.2 + Twilio - Pig Latin Transtor</p>
@@ -33,7 +33,7 @@ end
 
 We can now run `bundle exec rake db:migrate` to create our databases and the schema. This is a good time to commit to git.
 
-An after_create hook is going to be used in the model to run our processing method on all newly created TextMessage records. Eventually this process method will determine if a message is incoming or outgoing and then either translate and create a new TextMessage record with the translation or send out the translation. For now let's put in the after_create and a process method that just prints the TextMessage body to the console.
+An after\_create hook is going to be used in the model to run our processing method on all newly created TextMessage records. Eventually this process method will determine if a message is incoming or outgoing and then either translate and create a new TextMessage record with the translation or send out the translation. For now let's put in the after\_create and a process method that just prints the TextMessage body to the console.
 
 ```ruby
 class TextMessage < ActiveRecord::Base
