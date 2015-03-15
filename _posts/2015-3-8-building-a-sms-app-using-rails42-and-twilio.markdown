@@ -15,9 +15,11 @@ Run `rails new anslatortray` to create the project. This is also a good time to 
 
 This project is going to consist of a single model and controller. The model is going to hold the to and from phone numbers as well as the body of the SMS message. Since Twilio formats its phone numbers as 12 digit strings starting with a "+1"(e.x. "+11111111111"), we will have two such strings on our model. _If you are using a Twilio phone number that is not US it may not be formatted exactly the same, check their [article on international number formatting](https://www.twilio.com/help/faq/phone-numbers/how-do-i-format-phone-numbers-to-work-internationally)._ In addition, we will add a non-null string to store the body. We can create this by running `bundle exec rails g model TextMessage to:string from:string body:string`. This will generate both the model file and the migration (as well as some files used for testing that we are going to ignore, at least for this part of the tutorial).
 
-We need to open up the migration in db/migrations and add the 12 digit limit and non-null column modifiers.
+We need to open up the migration and add the 12 digit limit and non-null column modifiers.
 
 ```ruby
+# File: /db/migrate/xxxxxxxxxxxxxx_create_text_messages.rb
+
 class CreateTextMessages < ActiveRecord::Migration
   def change
     create_table :text_messages do |t|
@@ -36,6 +38,8 @@ We can now run `bundle exec rake db:migrate` to create our databases and the sch
 We can use an after\_create hook in the model to run our process method on all newly created TextMessage records. For now let's put in the after\_create and a process method that just prints the TextMessage body to the console. We will come back shortly and flesh out this method to actually process text messages.
 
 ```ruby
+# File: /app/models/text_message.rb
+
 class TextMessage < ActiveRecord::Base
   after_create :process
 
@@ -48,6 +52,8 @@ end
 Having a place to store our messages is great but we need to setup a controller and a route to get our messages into the model. Let's run `bundle exec rails g controller TextMessages` to auto generate the files. Then we'll want to add a few things to /app/controllers/text\_messages\_controller.rb. At the top we're going to need to disable CSRF (Cross Site Forgery) protection to allow Twilio to post to this controllers URL. We are also going to need a create method that takes the params from the post request and creates a new TextMessage record. Finally, need to send an ok response to let Twilio know we got the request. _You'll get errors later if you forget the `head: ok` bit._
 
 ```ruby
+# File: /app/controllers/text_messages_controller.rb
+
 class TextMessagesController < ApplicationController
 
   skip_before_action :verify_authenticity_token
@@ -91,6 +97,8 @@ Let's assume for now that our Twilio number is +12345678910. Later we'll use our
 If the message is incoming we want to break up the sentence into individual words and translate them. Then we want to rejoin all of our translated words back into a single string. Then we'll create a new TextMessage record with the correct to and from fields to send the translation back.
 
 ```ruby
+# File: /app/models/text_message.rb
+
 def process
   if to == '+12345678910'
     new_sentence = body.split.map{ |x| translate(x) }
@@ -105,6 +113,8 @@ end
 At this point we should also add the actual translate method which we got from [stackoverflow!](http://stackoverflow.com/a/13499011/4541669)
 
 ```ruby
+# File: /app/models/text_message.rb
+
 # From http://stackoverflow.com/a/13499011/4541669
 def translate(str)
   alpha = ('a'..'z').to_a
@@ -126,6 +136,8 @@ end
 This takes care of processing incoming SMS and generating a new TextMessage record that contains the outgoing text information but what about actually sending the message back. For now lets make a send outgoing method that just prints the body of the text message to the console to make sure our translator is working!
 
 ```ruby
+# File: /app/models/text_message.rb
+
 def send_outgoing
   puts body
 end
@@ -147,6 +159,8 @@ Completed 200 OK in 22ms (ActiveRecord: 1.4ms)
 Now we need to add Twilio to the mix. First by adding `gem 'twilio-ruby'` to the top of our Gemfile. Now we can replace our the body of our send_outgoing method in our model with a call to Twilio. We can also add a private helper method that makes the client object that we need.
 
 ```ruby
+# File: /app/models/text_message.rb
+
 def send_outgoing
   client.messages.create(
     to: to,
@@ -168,6 +182,8 @@ Now you need to setup a Twilio account if you don't already have one. After you 
 Twilio provides you with an Account SID and Auth Token that your application is going to need to communicate with their API. We don't want to hard code these values in so we are going to pull them into our application from environment variables. We can do this by editing our config/secrets.yml file to pick up our Twilio credentials from environment variables using some basic ERB. We can also add a Twilio phone number here so that we can change it in our TextMessages model using environment variables. We can do this by adding a default (cause we want it in multiple environments) and updating the following code.
 
 ```erb
+# File: /config/secrets.yml
+
 default: &default
   twilio_account_sid:  <%= ENV["TWILIO_ACCOUNT_SID"] %>
   twilio_auth_token:   <%= ENV["TWILIO_AUTH_TOKEN"] %>
@@ -190,6 +206,8 @@ production:
 We also need to tell the Twilio gem about the keys. We can do this by creating a config/initializers/twilio.rb that looks like this:
 
 ```ruby
+# File: config/initializers/twilio.rb
+
 require 'twilio-ruby'
 
 Twilio.configure do |config|
@@ -201,6 +219,8 @@ end
 Let's also go back and change our hard coded phone number in the text messages model to use the number we are passing in as an environment variable. One way to do this is by making a private phone number method and calling that method in place of the hard coded number.
 
 ```ruby
+# File: /app/models/text_message.rb
+
 def process
   if to == phone_number
     new_sentence = body.split.map{ |x| translate(x) }
