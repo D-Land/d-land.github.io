@@ -224,6 +224,7 @@ Finally we need to secure the /text url in production so that only Twilio can PO
 Now that we need to connect to Twilio's servers it becomes much harder to run things locally. If you want to experiment with getting it working locally [this](https://www.twilio.com/blog/2013/10/test-your-webhooks-locally-with-ngrok.html) is an article on Twilio's site about how to do it. Instead in Part 2 of this tutorial we are going to get our application running on Heroku.
 
 Addition resources:
+
 * [Twilio On Rails - Integrating Twilio With Your Rails 4 App](https://www.twilio.com/blog/2014/02/twilio-on-rails-integrating-twilio-with-your-rails-4-app.html)
 * [Twilio On Rails - Sending SMS MMS](https://www.twilio.com/blog/2014/10/twilio-on-rails-part-2-rails-4-app-sending-sms-mms.html)
 * [Handy - An SMS based Attendance Tracking Application](https://github.com/Pitt-CSC/handy)
