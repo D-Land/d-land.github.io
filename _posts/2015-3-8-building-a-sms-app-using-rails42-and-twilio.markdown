@@ -18,7 +18,7 @@ This project is going to consist of a single model and controller. The model is 
 We need to open up the migration and add the 12 digit limit and non-null column modifiers.
 
 ```ruby
-# File: /db/migrate/xxxxxxxxxxxxxx_create_text_messages.rb
+# File: /db/migrate/YYYYMMDDHHMMSS_create_text_messages.rb
 
 class CreateTextMessages < ActiveRecord::Migration
   def change
