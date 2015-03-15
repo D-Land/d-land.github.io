@@ -47,6 +47,7 @@ Now send a text from your phone that says "catch me if you can" and if you've be
 In part 3 we are going to add in ActiveJob. The calls to Twilio can take up to one second each which makes it a perfect candidate for a simple task that can be done by a background worker to free up the web server.
 
 Additional Resources:
+
 * [Twilio On Rails - Integrating Twilio With Your Rails 4 App](https://www.twilio.com/blog/2014/02/twilio-on-rails-integrating-twilio-with-your-rails-4-app.html)
 * [Twilio On Rails - Sending SMS MMS](https://www.twilio.com/blog/2014/10/twilio-on-rails-part-2-rails-4-app-sending-sms-mms.html)
 * [Getting Started with Rails 4.x on Heroku](https://devcenter.heroku.com/articles/getting-started-with-rails4)
