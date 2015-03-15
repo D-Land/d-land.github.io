@@ -45,7 +45,7 @@ class TextMessage < ActiveRecord::Base
 end
 ```
 
-Having a place to store our messages is great but we need to setup a controller and a route to get our messages into the model. Let's run `bundle exec rails g controller TextMessages` to auto generate the files. Then we'll want to add a few things to /app/controllers/text_messages_controller.rb. At the top we're going to need to disable CSRF (Cross Site Forgery) protection to allow Twilio to post to this controllers URL. We are also going to need a create method that takes the params from the post request and creates a new TextMessage record. Finally, need to send an ok response to let Twilio know we got the request. _You'll get errors later if you forget the `head: ok` bit._
+Having a place to store our messages is great but we need to setup a controller and a route to get our messages into the model. Let's run `bundle exec rails g controller TextMessages` to auto generate the files. Then we'll want to add a few things to /app/controllers/text\_messages\_controller.rb. At the top we're going to need to disable CSRF (Cross Site Forgery) protection to allow Twilio to post to this controllers URL. We are also going to need a create method that takes the params from the post request and creates a new TextMessage record. Finally, need to send an ok response to let Twilio know we got the request. _You'll get errors later if you forget the `head: ok` bit._
 
 ```ruby
 class TextMessagesController < ApplicationController
