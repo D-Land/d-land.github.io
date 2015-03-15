@@ -13,7 +13,7 @@ My code is on [Github Here](https://github.com/D-Land/anslatortray) and if you l
 First, we're going to setup a new rails project. Let's call it anslatortray (that's pig latin for translator).
 Run **`rails new anslatortray`** to create the project. This is also a good time to initialize a git repo for the project and make your initial commit. I'm not going to mention making commits throughout the piece but I suggest you make them often.
 
-This project is going to consist of a single model and controller. The model is going to hold the to and from phone numbers as well as the body of the SMS message. Since Twilio formats its phone numbers as 12 digit strings starting with a "+1"(e.x. "+11111111111"), we will have two such strings on our model. _If you are using a Twilio phone number that is not US it may not be formatted exactly the same, check their [article on international number formatting](https://www.twilio.com/help/faq/phone-numbers/how-do-i-format-phone-numbers-to-work-internationally)._ In addition, we will add a non-null string to store the body. We can create this by running `bundle exec rails g model TextMessage to:string from:string body:string`. This will generate both the model file and the migration (as well as some files used for testing that we are going to ignore, at least for this part of the tutorial).
+This project is going to consist of a single model and controller. The model is going to hold the to and from phone numbers as well as the body of the SMS message. Since Twilio formats its phone numbers as 12 digit strings starting with a "+1"(e.x. "+11111111111"), we will have two such strings on our model. _If you are using a Twilio phone number that is not US it may not be formatted exactly the same, check their [article on international number formatting](https://www.twilio.com/help/faq/phone-numbers/how-do-i-format-phone-numbers-to-work-internationally)._ In addition, we will add a non-null string to store the body. We can create this by running **`bundle exec rails g model TextMessage to:string from:string body:string`**. This will generate both the model file and the migration (as well as some files used for testing that we are going to ignore, at least for this part of the tutorial).
 
 We need to open up the migration and add the 12 digit limit and non-null column modifiers.
 
@@ -33,7 +33,7 @@ class CreateTextMessages < ActiveRecord::Migration
 end
 ```
 
-We can now run `bundle exec rake db:migrate` to create our databases and the schema. This is a good time to commit to git.
+We can now run **`bundle exec rake db:migrate`** to create our databases and the schema. This is a good time to commit to git.
 
 We can use an after\_create hook in the model to run our process method on all newly created TextMessage records. For now let's put in the after\_create and a process method that just prints the TextMessage body to the console. We will come back shortly and flesh out this method to actually process text messages.
 
@@ -49,7 +49,7 @@ class TextMessage < ActiveRecord::Base
 end
 ```
 
-Having a place to store our messages is great but we need to setup a controller and a route to get our messages into the model. Let's run `bundle exec rails g controller TextMessages` to auto generate the files. Then we'll want to add a few things to /app/controllers/text\_messages\_controller.rb. At the top we're going to need to disable CSRF (Cross Site Forgery) protection to allow Twilio to post to this controllers URL. We are also going to need a create method that takes the params from the post request and creates a new TextMessage record. Finally, need to send an ok response to let Twilio know we got the request. _You'll get errors later if you forget the `head: ok` bit._
+Having a place to store our messages is great but we need to setup a controller and a route to get our messages into the model. Let's run **`bundle exec rails g controller TextMessages`** to auto generate the files. Then we'll want to add a few things to our text\_messages\_controller.rb. At the top we're going to need to disable CSRF (Cross Site Forgery) protection to allow Twilio to post to this controllers URL. We are also going to need a create method that takes the params from the post request and creates a new TextMessage record. Finally, need to send an ok response to let Twilio know we got the request. _You'll get errors later if you forget the **`head: ok`** bit._
 
 ```ruby
 # File: /app/controllers/text_messages_controller.rb
@@ -73,9 +73,9 @@ class TextMessagesController < ApplicationController
 end
 ```
 
-To get to that controller action, we're now going make a route to our TextMessagesController by adding `post 'text', to: 'text_messages#create'` to the top of the config/routes.rb.
+To get to that controller action, we're now going make a route to our TextMessagesController by adding **`post 'text', to: 'text_messages#create'`** to the top of the config/routes.rb.
 
-We should now test to make sure our route, controller, and model code thus far are working together. We can do this by starting a rails server by running `bundle exec rails s` and in another terminal using CURL to emulate a POST request. The CURL command we are going to use is `curl -X POST localhost:3000/text -d "To=%2B12345678910" -d "From=%2B12345678911" -d "Body=Catch me if you can"`. The %2B part of the phone numbers is actually a '+'.
+We should now test to make sure our route, controller, and model code thus far are working together. We can do this by starting a rails server by running **`bundle exec rails s`** and in another terminal using CURL to emulate a POST request. The CURL command we are going to use is **`curl -X POST localhost:3000/text -d "To=%2B12345678910" -d "From=%2B12345678911" -d "Body=Catch me if you can"`**. The %2B part of the phone numbers is actually a '+'.
 
 You should see something similar to this in the server log if everything is working:
 
@@ -238,10 +238,10 @@ def phone_number
 end
 ```
 
-Finally we need to secure the /text url in production so that only Twilio can POST to it. We do this by adding `  config.middleware.use Rack::TwilioWebhookAuthentication, Rails.application.secrets.twilio_auth_token, '/text'
-` to the end of config/environments/production.rb. _This means that when its running in production mode you will not be able to curl your URL to simulate a Twilio request_
+Finally we need to secure the /text url in production so that only Twilio can POST to it. We do this by adding **`config.middleware.use Rack::TwilioWebhookAuthentication, Rails.application.secrets.twilio_auth_token, '/text'
+`** to the end of config/environments/production.rb. _This means that when its running in production mode you will not be able to curl your URL to simulate a Twilio request_
 
-Now that we need to connect to Twilio's servers it becomes much harder to run things locally. If you want to experiment with getting it working locally [this](https://www.twilio.com/blog/2013/10/test-your-webhooks-locally-with-ngrok.html) is an article on Twilio's site about how to do it. Instead in Part 2 of this tutorial we are going to get our application running on Heroku.
+Now that we need to connect to Twilio's servers it becomes much harder to run things locally. If you want to experiment with getting it working locally [this](https://www.twilio.com/blog/2013/10/test-your-webhooks-locally-with-ngrok.html) is an article on Twilio's site about how to do it. In Part 2 of this tutorial we are going to get our application running on Heroku.
 
 Addition resources:
 
