@@ -11,7 +11,7 @@ This is part one of three on building an app that utilizes Rails 4.2 and ActiveJ
 My code is on [Github Here](https://github.com/D-Land/anslatortray) and if you look at the commit history it follows along with this tutorial  closely.
 
 First, we're going to setup a new rails project. Let's call it anslatortray (that's pig latin for translator).
-Run `rails new anslatortray` to create the project. This is also a good time to initialize a git repo for the project and make your initial commit. I'm not going to mention making commits throughout the piece but I suggest you make them often.
+Run **`rails new anslatortray`** to create the project. This is also a good time to initialize a git repo for the project and make your initial commit. I'm not going to mention making commits throughout the piece but I suggest you make them often.
 
 This project is going to consist of a single model and controller. The model is going to hold the to and from phone numbers as well as the body of the SMS message. Since Twilio formats its phone numbers as 12 digit strings starting with a "+1"(e.x. "+11111111111"), we will have two such strings on our model. _If you are using a Twilio phone number that is not US it may not be formatted exactly the same, check their [article on international number formatting](https://www.twilio.com/help/faq/phone-numbers/how-do-i-format-phone-numbers-to-work-internationally)._ In addition, we will add a non-null string to store the body. We can create this by running `bundle exec rails g model TextMessage to:string from:string body:string`. This will generate both the model file and the migration (as well as some files used for testing that we are going to ignore, at least for this part of the tutorial).
 
