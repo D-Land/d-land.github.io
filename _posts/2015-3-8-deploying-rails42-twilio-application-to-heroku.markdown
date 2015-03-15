@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Part Two: Rails 4.2 + Twilio + Heroku"
+title:  "Deploying Rails 4.2 + Twilio Application To Heroku"
 date:   2015-3-9
 ---
 
