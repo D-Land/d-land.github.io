@@ -6,14 +6,14 @@ date:   2015-3-8
 
 This is part one of three on building an app that utilizes Rails 4.2 and ActiveJob along with Twilio and Heroku.
 
-<p class="intro"><span class="dropcap">I</span>n this part we are going to create a SMS based English to Pig Latin translator. In the end you will be able to text a phone number with an English sentence and it will send you back the Pig Latin translation. There will be no front end. The only way to communicate with the app as an end user is via text message.
+<p class="intro"><span class="dropcap">I</span>n this part we are going to create a SMS based English to Pig Latin translator. In the end you will be able to text a phone number with an English sentence and have the Pig Latin translation sent back to you. There will be no front end. The only way to communicate with the app as an end user is via text message.
 
-My code can be found on [Github Here](https://github.com/D-Land/anslatortray) and if you look at the commit history it follows along with this tutorial very closely.
+My code is on [Github Here](https://github.com/D-Land/anslatortray) and if you look at the commit history it follows along with this tutorial  closely.
 
 First, we're going to setup a new rails project. Let's call it anslatortray (that's pig latin for translator).
-Run `rails new anslatortray` to create the new project. This is also a good time to initialize a git repo for the project and make your initial commit. I'm not going to mention making commits throughout the piece but I suggest you make commits often.
+Run `rails new anslatortray` to create the project. This is also a good time to initialize a git repo for the project and make your initial commit. I'm not going to mention making commits throughout the piece but I suggest you make them often.
 
-This project is going to consist of a single model and controller. The model is going to hold the to and from phone numbers as well as the body of the SMS message. Since Twilio formats its phone numbers as 12 digit strings starting with a "+1"(e.x. "+11111111111"), we will have two twelve digit strings on our model. _If you are using a Twilio phone number that is not US it may not be formatted exactly the same, check the Twilio website._ In addition, we will add a non-null string to store the body. We can create this by running `bundle exec rails g model TextMessage to:string from:string body:string`. This will generate both the model file and the migration (as well as some files used for testing that we are going to ignore, at least for this part of the tutorial).
+This project is going to consist of a single model and controller. The model is going to hold the to and from phone numbers as well as the body of the SMS message. Since Twilio formats its phone numbers as 12 digit strings starting with a "+1"(e.x. "+11111111111"), we will have two such strings on our model. _If you are using a Twilio phone number that is not US it may not be formatted exactly the same, check their [article on international number formatting](https://www.twilio.com/help/faq/phone-numbers/how-do-i-format-phone-numbers-to-work-internationally)._ In addition, we will add a non-null string to store the body. We can create this by running `bundle exec rails g model TextMessage to:string from:string body:string`. This will generate both the model file and the migration (as well as some files used for testing that we are going to ignore, at least for this part of the tutorial).
 
 We need to open up the migration in db/migrations and add the 12 digit limit and non-null column modifiers.
 
@@ -33,7 +33,7 @@ end
 
 We can now run `bundle exec rake db:migrate` to create our databases and the schema. This is a good time to commit to git.
 
-An after\_create hook is going to be used in the model to run our processing method on all newly created TextMessage records. For now let's put in the after\_create and a process method that just prints the TextMessage body to the console. We will come back shortly and flesh out this method to actually process text messages.
+We can use an after\_create hook in the model to run our process method on all newly created TextMessage records. For now let's put in the after\_create and a process method that just prints the TextMessage body to the console. We will come back shortly and flesh out this method to actually process text messages.
 
 ```ruby
 class TextMessage < ActiveRecord::Base
@@ -67,7 +67,7 @@ class TextMessagesController < ApplicationController
 end
 ```
 
-To get to that controller action, we're now going make a route to our TextMessagesController by adding `post 'text', to: 'text_messages#create'` to the top of the config/routes.rb file.
+To get to that controller action, we're now going make a route to our TextMessagesController by adding `post 'text', to: 'text_messages#create'` to the top of the config/routes.rb.
 
 We should now test to make sure our route, controller, and model code thus far are working together. We can do this by starting a rails server by running `bundle exec rails s` and in another terminal using CURL to emulate a POST request. The CURL command we are going to use is `curl -X POST localhost:3000/text -d "To=%2B12345678910" -d "From=%2B12345678911" -d "Body=Catch me if you can"`. The %2B part of the phone numbers is actually a '+'.
 
@@ -82,7 +82,7 @@ catch me if you can
    (0.6ms)  commit transaction
 Completed 200 OK in 20ms (ActiveRecord: 1.2ms)
 ```
-Make sure that you can see on the 3rd line from the bottom where the SMS body is being printed to the console.
+Make sure that you can see on the 3rd line from the bottom where the SMS body is printed to the console.
 
 Now we have a structure around which we can build our Pig Latin translator. Let's go back to the TextMessage model and change the process method to actually handle converting some text to Pig Latin. 
 
@@ -163,7 +163,7 @@ end
 
 ```
 
-Now you need to setup a Twilio account if you don't already have one. After you register go to the numbers section of their site from the top menu bar. Once there click on buy a number to purchase a Twilio phone number (make sure to buy one that supports SMS).
+Now you need to setup a Twilio account if you don't already have one. After you register go to the numbers section of their site from the top menu bar. Once there click on buy a number to purchase a Twilio phone number (make sure that you buy one that supports SMS).
 
 Twilio provides you with an Account SID and Auth Token that your application is going to need to communicate with their API. We don't want to hard code these values in so we are going to pull them into our application from environment variables. We can do this by editing our config/secrets.yml file to pick up our Twilio credentials from environment variables using some basic ERB. We can also add a Twilio phone number here so that we can change it in our TextMessages model using environment variables. We can do this by adding a default (cause we want it in multiple environments) and updating the following code.
 
